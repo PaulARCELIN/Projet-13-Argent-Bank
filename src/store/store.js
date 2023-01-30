@@ -1,24 +1,13 @@
-import { createStore } from "redux"
-const initialState = {
-    userConnected: false,
-    firstName: 'Tony',
-    lastName: 'Stark',
-}
+import { createStore, combineReducers } from "redux"
+import userReducer from "./userState"
+import fetchReducer from "./fetchState"
 
-export const connectUser = () => ({
-    type: "connectUser",
+
+const reducer = combineReducers({
+    user: userReducer,
+    fetch: fetchReducer,
 })
 
 
-function reducer(state, action) {
-    if(action.type === "connectUser") {
-        return {
-            ...state, 
-            userConnected: !state.userConnected
-        }
-    }
-    return state;
-}
-
-export const store = createStore(reducer, initialState)
+export const store = createStore(reducer)
 
