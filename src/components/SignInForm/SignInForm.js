@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './SignInForm.css'
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserConnected, setUserEmail, setUserFirstName, setUserLastName  } from "../../store/userState";
 import { fetchToken, fetchProfile } from '../../services/api';
 import { tokenFetching, tokenRejected, tokenResolved } from '../../store/fetchState';
@@ -14,31 +14,20 @@ export function SignInForm() {
 
     const dispatch = useDispatch()
     const isUserConnected = useSelector((state) => state.user.isUserConnected)
-    const token = useSelector((state) => state.fetch.data)
     const status = useSelector((state) => state.fetch.status)
+    const error = useSelector((state) => state.fetch.error)
 
     let bodyRequest = {
         email,
         password
     }
 
-    async function initToken(store) {
-        const data = await fetchToken(bodyRequest)
-        if(data.status === 200) {
-          localStorage.setItem('token', data.body.token)
-        }
-        else {
-          console.log("err initToken")
-        }
-    }
-
-
     const handleSubmit = async (e) => {
         e.preventDefault()
         const response = await fetchToken(bodyRequest)
         dispatch(tokenFetching())
         if(response.status === 200) {
-            dispatch(tokenResolved())
+            dispatch(tokenResolved(await response.body.token))
             const data = await fetchProfile(await response.body.token)
             console.log(await data.body) 
             dispatch(setUserEmail(data.body.email))
@@ -63,7 +52,6 @@ export function SignInForm() {
     }
 
     return <main className="main bg-dark">
-        <button onClick={() => console.log(token)}>log token</button>
         <section className='sign-in-content'>
             <i className="fa fa-user-circle sign-in-icon"></i>
             <h1>Sign In</h1>
@@ -74,8 +62,9 @@ export function SignInForm() {
                 </div>
                 <div className="input-wrapper">
                     <label htmlFor="password">Password</label>
-                    <input id="password" type="texte" onChange={(e) => setPassword(e.target.value)}></input>
+                    <input id="password" type="password" onChange={(e) => setPassword(e.target.value)}></input>
                 </div>
+                <p className='error-message'>{error === 'erreur token' ? "wrong password or username" : ""}</p>
                 <div className="input-remember">
                     <input id="remember-me" type="checkbox"></input>
                     <label htmlFor="remember-me">Remember me</label>

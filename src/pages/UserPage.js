@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 import { Account } from "../components/Account/Account";
 import { Footer } from "../components/Footer/Footer";
 import { Header } from "../components/Header/Header";
@@ -5,6 +7,13 @@ import { ProfileHeader } from "../components/ProfileHeader/ProfileHeader";
 import { TestComponent } from "../components/Test/TestComponent";
 
 export function UserPage() {
+
+    const isUserConnected = useSelector((state) => state.user.isUserConnected)
+
+    if(isUserConnected === false) {
+        return <Navigate to="/login"/>
+    }
+
     return <div className="user-page page">
         <Header />
         <main className="main bg-dark">
@@ -16,4 +25,5 @@ export function UserPage() {
         </main>
         <Footer />
     </div>
+    
 }

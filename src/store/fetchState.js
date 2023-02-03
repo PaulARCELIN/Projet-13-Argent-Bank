@@ -9,10 +9,12 @@ const initialState = {
 const FETCHING = 'token/fetching'
 const RESOLVED = 'token/resolved'
 const REJECTED = 'token/rejected'
+const RESET = 'token/reset'
  
 export const tokenFetching = () => ({ type: FETCHING });
 export const tokenResolved = (data) => ({ type: RESOLVED, payload: data });
 export const tokenRejected = (error) => ({ type: REJECTED, payload: error });
+export const tokenReset = () => ( {type: RESET} );
 
 
 export default function fetchReducer(state = initialState, action) {
@@ -49,6 +51,12 @@ export default function fetchReducer(state = initialState, action) {
                     draft.status = 'rejected'
                     return
                 }
+                return
+            }
+            case RESET: {
+                draft.status = 'void'
+                draft.data = null
+                draft.error = null
                 return
             }
             default: 

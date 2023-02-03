@@ -2,6 +2,7 @@ import './Nav.css'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { signOut } from '../../store/userState'
+import { tokenReset } from '../../store/fetchState'
 
 export function Nav() {
     
@@ -12,8 +13,8 @@ export function Nav() {
    const dispatch = useDispatch()
 
     function logOut() {
-        localStorage.setItem('token', '')
         dispatch(signOut())
+        dispatch(tokenReset())
     }
 
    if(!isUserConnected) {
